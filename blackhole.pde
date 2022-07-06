@@ -2,20 +2,22 @@ import java.util.*;
 
 Random rand = new Random();
 
-final int starSize = 1;
-final int starSizeSpread = 2;
-final int starCount = 10000;
-final int starBrightness = 225;
-final int starBrightnessSpread = 25;
+int starSize = 1;
+int starSizeSpread = 2;
+int starCount = 10000;
+int starBrightness = 225;
+int starBrightnessSpread = 25;
 
-final int windowW = 1800;
-final int windowH = 1000;
+int windowW = 1800;
+int windowH = 1000;
 
-final int blackHoleDiameter = 300;
+int blackHoleDiameter = 300;
 color accretionDiskColor = color(255);
 
-final int raySize = 20;
-final int rayBrightness = 100;
+int rayVariability = 100;
+int raySize = 20;
+float raySpanMultiplier = 1.0;
+int rayBrightness = 100;
 
 color galaxyPrimary = 220;
 color galaxySecondary = 282;
@@ -24,23 +26,40 @@ float galaxySizeModifier = 0.006;
 void setup(){
   noLoop();
   size(1800, 1000);
+}
+
+
+void draw(){
+  noiseSeed(rand.nextInt());
   background(0);
-  
-  
-  
-  
   
   // Generate a ray across the background  
   stroke(rayBrightness);
   strokeWeight(raySize);
-  line(rand.nextInt(width), -10, rand.nextInt(width), height+10);
+  noFill();
+  switch(rand.nextInt(4)){
+    case 0:
+      ellipse(width - 100 + rand.nextInt(rayVariability), height - 100 + rand.nextInt(rayVariability), (rand.nextInt(5000) + width) * raySpanMultiplier,  (rand.nextInt(500) + height) * raySpanMultiplier);
+      break;
+    case 1:
+      ellipse(0 - 100 + rand.nextInt(rayVariability), height - 100 + rand.nextInt(rayVariability), (rand.nextInt(5000) + width) * raySpanMultiplier,  (rand.nextInt(500) + height) * raySpanMultiplier);
+      break;
+    case 2:
+      ellipse(width - 100 + rand.nextInt(rayVariability), height - 100 + rand.nextInt(rayVariability), (rand.nextInt(500) + height) * raySpanMultiplier, (rand.nextInt(5000) + width) * raySpanMultiplier);
+      break;
+    case 3:
+      ellipse(width - 100 + rand.nextInt(rayVariability), 0 - 100 + rand.nextInt(rayVariability), (rand.nextInt(500) + height) * raySpanMultiplier, (rand.nextInt(5000) + width) * raySpanMultiplier);
+      break;
+  }
   
   
   
   
   
-  
+
   // Create the accretion disk for the black hole
+  //stroke(red(accretionDiskColor) / 10);
+  //circle(width/2, height/2, blackHoleDiameter * 1.1);
   noStroke();
   fill(accretionDiskColor);
   circle(width/2, height/2, blackHoleDiameter);
@@ -99,4 +118,64 @@ void setup(){
   
   // Finally, create the black hole
   circle(width/2, height/2, blackHoleDiameter * 0.95);
+}
+
+void mousePressed(){
+  redraw(); 
+}
+
+void keyPressed(){
+  switch(key){
+    case '[':
+      galaxyPrimary--;
+      print("Galaxy hue 1: " + galaxyPrimary + "\n");
+      break;
+    case ']':
+      galaxyPrimary++;
+      print("Galaxy hue 1: " + galaxyPrimary + "\n");
+      break;
+    case ';':
+      galaxySecondary--;
+      print("Galaxy hue 2: " + galaxySecondary + "\n");
+      break;
+    case '\'':
+      galaxySecondary++;
+      print("Galaxy hue 2: " + galaxySecondary + "\n");
+      break;
+    case '.':
+      raySpanMultiplier -= 0.1;
+      print("Ray span multiplier: " + raySpanMultiplier + "\n");
+      break;
+    case '/':
+      raySpanMultiplier += 0.1;
+      print("Ray span multiplier: " + raySpanMultiplier + "\n");
+      break;
+    case 'q':
+      starCount -= 250;
+      print("Star count: " + starCount + "\n");
+      break;
+    case 'w':
+      starCount += 250;
+      print("Star count: " + starCount + "\n");
+      break;
+    case 'a':
+      starSize--;
+      print("Star size: " + starSize + "\n");
+      break;
+    case 's':
+      starSize++;
+      print("Star size: " + starSize + "\n");
+      break;
+    case 'z':
+      starSizeSpread--;
+      print("Star size spread: " + starSizeSpread + "\n");
+      break;
+    case 'x':
+      starSizeSpread++;
+      print("Star size spread: " + starSizeSpread + "\n");
+      break;
+    default:
+      
+    
+  }
 }
