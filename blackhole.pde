@@ -4,7 +4,11 @@ Random rand = new Random();
 
 boolean blackHole = true;
 
-ArrayList<PShader> shaders = new ArrayList();
+ArrayList<Planet> planets;
+int numPlanets = 0;
+float planetSizeMod = 1.0;
+boolean planetShadows = true;
+
 int currShader = 0;
 
 int starSize = 1;
@@ -33,7 +37,7 @@ float galaxySizeModifier = 0.006;
 boolean banding = false;
 int bandingAmt = 30;
 
-int sessID = 0000;
+int sessID;
 
 void setup(){
   sessID = 1000 + rand.nextInt(9000);
@@ -45,9 +49,28 @@ void setup(){
 
 
 void draw(){
+  colorMode(RGB);
+  planets = new ArrayList<Planet>();
   noiseSeed(rand.nextInt());
   background(0);
   
+  // Generate the planets if there are any
+  for(int i = 0; i < numPlanets; i++){
+    Planet p;
+    boolean isColliding;
+    do {
+      isColliding = false;
+      p = new Planet(rand.nextInt(width), rand.nextInt(height), (100 + rand.nextInt(100))  * planetSizeMod, rand.nextInt(255), rand.nextInt(200), rand.nextFloat());
+      for(Planet x : planets){
+        if(dist(p.x, p.y, x.x, x.y) < p.d / 2 + x.d / 2) isColliding = true;
+        if(blackHole && dist(p.x, p.y, width/2, height/2) < blackHoleDiameter/2 + p.d/2) isColliding = true;
+      }
+    } while(isColliding);
+    planets.add(p);
+  }
+
+
+
   // Generate a ray across the background  
   stroke(rayBrightness);
   strokeWeight(raySize);
@@ -87,6 +110,8 @@ void draw(){
   //ellipse(width/2, height/2, blackHoleDiameter * 1.2, blackHoleDiameter * .8);
   
   
+
+
   // Blur the accretion disk and ray to create a glowing effect
   filter(BLUR, 10); 
   
@@ -142,14 +167,12 @@ void draw(){
   
   galaxyPrimary = tempHue1;
   galaxySecondary = tempHue2;
-
-  colorMode(RGB);
-  
-  noStroke();
-  
   
   
   // Populate space with stars
+  colorMode(RGB);
+  
+  noStroke();
   for(int i = 0; i < starCount; i++){
     int x = rand.nextInt(windowW);
     int y = rand.nextInt(windowH);
@@ -159,13 +182,53 @@ void draw(){
     circle(x,y, r);
   }
   
-  fill(0);
-  
+  //Create shadows for the planets
+  if(planetShadows){
+    for(Planet p : planets){
+      int fillLevel = 200;
+      float diameter = 1.0;
+      while(fillLevel > 0){
+        fill(4,4,4,fillLevel);
+        circle(p.x * 1.0017, p.y, p.d * diameter);
+        diameter += .01;
+        fillLevel -= 15;
+      }
+      
+    }
+  } 
+
+  // Create the planets
+  colorMode(HSB);
+  strokeCap(PROJECT);
+  xoff = 0.0;
+  for(int x = 0; x < width; x++){
+    xoff += .02;  
+    float yoff = 0.0;
+    for(int y = 0; y < height; y++){
+      yoff += .02;
+      for(Planet p : planets){
+        if(dist(x, y, p.x, p.y) < p.d / 2){
+          //We are in planets area
+          float noiseValue = noise(xoff, yoff);
+          float xdist = dist(x, 0, p.x + p.d/1.25, 0);
+          float ydist = dist(y, 0, p.y + p.d/1.25, 0);
+          color c = color(p.hue, p.sat, ((noiseValue * 180) * map(xdist, 0, p.d, 1.0, p.shadow / 5)));
+          
+          stroke(c);
+          strokeWeight(1);
+          point(x, y);
+          break;
+        }
+      }
+    }
+  }
+  strokeCap(ROUND);
   // Finally, create the black hole
+  colorMode(RGB);
+  fill(0);
   if(blackHole){
     circle(width/2, height/2, blackHoleDiameter * 0.95);
   }
-
 
 }
 
@@ -252,6 +315,12 @@ void keyPressed(){
         banding = !banding; 
         bandingAmt = 10 + rand.nextInt(45);
       }
+      if(rand.nextInt(2) == 0 && !blackHole){
+        numPlanets = rand.nextInt(6) + 1;
+        planetSizeMod = rand.nextInt(2) + rand.nextFloat();
+      }else{
+        numPlanets = 0;
+      }
       redraw();
       break;
     case 'r':
@@ -279,8 +348,46 @@ void keyPressed(){
       print("Saving image...\n");
       saveFrame("universe-" + sessID + "-####.png");
       break;
-      
     default:  
   }
+  switch(keyCode){
+    case UP:
+      numPlanets++;
+      print("Planet count: " + numPlanets + "\n");
+      break;
+    case DOWN:
+      numPlanets--;
+      print("Planet count: " + numPlanets + "\n");
+      break;
+    case LEFT:
+      planetSizeMod -= 0.1;
+      print("Planet size modifier: " + planetSizeMod + "\n");
+      break;
+    case RIGHT:
+      planetSizeMod += 0.1;
+      print("Planet size modifier: " + planetSizeMod + "\n");
+      break;
+    case SHIFT:
+      planetShadows = !planetShadows;
+      print("Planet shadows toggled " + (planetShadows ? "on" : "off") + "\n");
+      break;
+    default:
+  }
+}
 
+class Planet {
+  int x;
+  int y;
+  float d;
+  int hue;
+  int sat;
+  float shadow;
+  public Planet(int x, int y, float d, int hue, int sat, float shadow){
+    this.x = x;
+    this.y = y;
+    this.d = d;
+    this.hue = hue;
+    this.sat = sat;
+    this.shadow = shadow;
+  }
 }

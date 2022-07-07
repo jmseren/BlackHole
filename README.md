@@ -31,6 +31,12 @@ If this is not possible, there is an executable in the releases tab.
 **z / x** - Increase/Decrease the spread of star size
 
 
+**UP / DOWN** - Increase/Decrease number of planets
+
+
+**LEFT / RIGHT** - Increase/Decrease planet size multiplier
+
+
 **i / o** - Increase/Decrease the hue delta of the primary color
 
 
