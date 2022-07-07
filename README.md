@@ -68,10 +68,10 @@ If this is not possible, there is an executable in the releases tab.
 ![Black Hole Screenshot](https://i.postimg.cc/pT4grwyF/blue1.png)
 
 
-![Black Hole Screenshot](https://i.postimg.cc/zvh4gxRP/green2.png)
+![Black Hole Screenshot](https://i.postimg.cc/4N7GTyD4/space2.png)
 
 
 ![Black Hole Screenshot with Gradient](https://i.postimg.cc/PqB4wTzT/universe-5106-0007.png)
 
 
-![Black Hole Screenshot](https://i.postimg.cc/sfGkqg09/space2.png)
+![Black Hole Screenshot](https://i.postimg.cc/ncyJVZx4/space4.png)
