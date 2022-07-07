@@ -46,6 +46,9 @@ If this is not possible, there is an executable in the releases tab.
 **v / n** - Increase/Decrease band size
 
 
+**t / y** - Increase/Decrease ray count
+
+
 **b** - Enable banding
 
 

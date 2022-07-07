@@ -23,6 +23,7 @@ int windowH = 1000;
 int blackHoleDiameter = 300;
 color accretionDiskColor = color(255);
 
+int rayCount = 1;
 int rayVariability = 100;
 int raySize = 20;
 float raySpanMultiplier = 1.0;
@@ -75,20 +76,23 @@ void draw(){
   stroke(rayBrightness);
   strokeWeight(raySize);
   noFill();
-  switch(rand.nextInt(4)){
-    case 0:
-      ellipse(width - 100 + rand.nextInt(rayVariability), height - 100 + rand.nextInt(rayVariability), (rand.nextInt(5000) + width) * raySpanMultiplier,  (rand.nextInt(500) + height) * raySpanMultiplier);
-      break;
-    case 1:
-      ellipse(0 - 100 + rand.nextInt(rayVariability), height - 100 + rand.nextInt(rayVariability), (rand.nextInt(5000) + width) * raySpanMultiplier,  (rand.nextInt(500) + height) * raySpanMultiplier);
-      break;
-    case 2:
-      ellipse(width - 100 + rand.nextInt(rayVariability), height - 100 + rand.nextInt(rayVariability), (rand.nextInt(500) + height) * raySpanMultiplier, (rand.nextInt(5000) + width) * raySpanMultiplier);
-      break;
-    case 3:
-      ellipse(width - 100 + rand.nextInt(rayVariability), 0 - 100 + rand.nextInt(rayVariability), (rand.nextInt(500) + height) * raySpanMultiplier, (rand.nextInt(5000) + width) * raySpanMultiplier);
-      break;
+  for (int i = 0; i < rayCount; ++i) {
+    switch(rand.nextInt(4)){
+      case 0:
+        ellipse(width - 100 + rand.nextInt(rayVariability), height - 100 + rand.nextInt(rayVariability), (rand.nextInt(5000) + width) * raySpanMultiplier,  (rand.nextInt(500) + height) * raySpanMultiplier);
+        break;
+      case 1:
+        ellipse(0 - 100 + rand.nextInt(rayVariability), height - 100 + rand.nextInt(rayVariability), (rand.nextInt(5000) + width) * raySpanMultiplier,  (rand.nextInt(500) + height) * raySpanMultiplier);
+        break;
+      case 2:
+        ellipse(width - 100 + rand.nextInt(rayVariability), height - 100 + rand.nextInt(rayVariability), (rand.nextInt(500) + height) * raySpanMultiplier, (rand.nextInt(5000) + width) * raySpanMultiplier);
+        break;
+      case 3:
+        ellipse(width - 100 + rand.nextInt(rayVariability), 0 - 100 + rand.nextInt(rayVariability), (rand.nextInt(500) + height) * raySpanMultiplier, (rand.nextInt(5000) + width) * raySpanMultiplier);
+        break;
+    }
   }
+  
   
   
   
@@ -259,6 +263,14 @@ void keyPressed(){
     case '.':
       raySpanMultiplier -= 0.1;
       print("Ray span multiplier: " + raySpanMultiplier + "\n");
+      break;
+    case 't':
+      rayCount--;
+      print("Ray count: " + rayCount + "\n");
+      break;
+    case 'y':
+      rayCount++;
+      print("Ray count: " + rayCount + "\n");
       break;
     case '/':
       raySpanMultiplier += 0.1;
