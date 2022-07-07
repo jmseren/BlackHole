@@ -30,6 +30,9 @@ float hue1Delta = 0.0;
 float hue2Delta = 0.0;
 float galaxySizeModifier = 0.006;
 
+boolean banding = false;
+int bandingAmt = 30;
+
 int sessID = 0000;
 
 void setup(){
@@ -93,6 +96,8 @@ void draw(){
   colorMode(HSB);
   float tempHue1 = galaxyPrimary;
   float tempHue2 = galaxySecondary;
+  int bandingTimeout = rand.nextInt(bandingAmt);
+  boolean currBand = false;
   for(int x = 0; x < width; x++){
     xoff += galaxySizeModifier;  
     float yoff = 0.0;
@@ -104,10 +109,19 @@ void draw(){
        float hue = noise(xoff, yoff, (xoff+yoff)/2);
        
        float brightnessMod = 1.0;
+       
        if(dist(x,y,width/2,height/2) < blackHoleDiameter * 1.2 && blackHole){
            float maxDist = (blackHoleDiameter * 1.2);
            brightnessMod = map(dist(width/2,height/2,x,y), 0, maxDist, -1, 1);
+       }else if(banding && !blackHole){
+          brightnessMod = .25 + (noise(xoff, yoff));
+          
        }
+
+       
+      if(currBand || brightnessMod > 1.0){
+        brightnessMod = 1.0;
+      }
        
        
        color c = color(lerp(galaxyPrimary, galaxySecondary, hue),230, (180 * brightness) * brightnessMod);
@@ -115,6 +129,14 @@ void draw(){
        stroke(c);
        strokeWeight(1);
        point(x, y);
+    }
+    if(banding){
+        if(bandingTimeout > 0){
+          bandingTimeout--;
+        }else{
+          currBand = !currBand;
+          bandingTimeout = rand.nextInt(blackHole ? bandingAmt : bandingAmt * 10);
+    }
     }
   }
   
@@ -207,6 +229,18 @@ void keyPressed(){
       blackHole = !blackHole;
       print("Black hole toggled " + (blackHole ? "on" : "off") + "\n");
       break;
+    case 'b':
+      banding = !banding;
+      print("Banding toggled " + (banding ? "on" : "off") + "\n");
+      break;
+    case 'v':
+      bandingAmt--;
+      print("Banding amount: " + bandingAmt + "\n");
+      break;
+    case 'n':
+      bandingAmt++;
+      print("Banding amount: " + bandingAmt + "\n");
+      break;
     case 'c':
       print("Creating chaos...\n");
       galaxyPrimary = rand.nextInt(360);
@@ -214,6 +248,10 @@ void keyPressed(){
       blackHole = boolean(rand.nextInt(2));
       hue1Delta = (rand.nextFloat() - 0.5) / 10;
       hue2Delta = (rand.nextFloat() - 0.5) / 10;
+      if(rand.nextInt(3) == 0) { 
+        banding = !banding; 
+        bandingAmt = 10 + rand.nextInt(45);
+      }
       redraw();
       break;
     case 'r':
@@ -241,6 +279,7 @@ void keyPressed(){
       print("Saving image...\n");
       saveFrame("universe-" + sessID + "-####.png");
       break;
+      
     default:  
   }
 

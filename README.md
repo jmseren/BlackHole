@@ -37,6 +37,12 @@ If this is not possible, there is an executable in the releases tab.
 **j / k** - Increase/Decrease the hue delta of the secondary color
 
 
+**v / n** - Increase/Decrease band size
+
+
+**b** - Enable banding
+
+
 **r** - reset hue deltas to 0
 
 
@@ -50,7 +56,7 @@ If this is not possible, there is an executable in the releases tab.
 
 ## Screenshots
 
-![Black Hole Screenshot with Gradient](https://i.postimg.cc/PqB4wTzT/universe-5106-0007.png)
+![Black Hole Screenshot](https://i.postimg.cc/FRcH1jNF/universe-6239-0012.png)
 
 
 ![Black Hole Screenshot](https://i.postimg.cc/pT4grwyF/blue1.png)
@@ -59,5 +65,7 @@ If this is not possible, there is an executable in the releases tab.
 ![Black Hole Screenshot](https://i.postimg.cc/zvh4gxRP/green2.png)
 
 
-![Black Hole Screenshot](https://i.postimg.cc/sfGkqg09/space2.png)
+![Black Hole Screenshot with Gradient](https://i.postimg.cc/PqB4wTzT/universe-5106-0007.png)
 
+
+![Black Hole Screenshot](https://i.postimg.cc/sfGkqg09/space2.png)
