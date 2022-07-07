@@ -333,6 +333,11 @@ void keyPressed(){
       }else{
         numPlanets = 0;
       }
+      if(rand.nextInt(4) == 0){
+        rayCount = rand.nextInt(5);
+      }else{
+        rayCount = 1;
+      }
       redraw();
       break;
     case 'r':
