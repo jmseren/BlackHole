@@ -4,6 +4,13 @@
 
 This project is a quick experiment I've been working on using Processing and Java. The results have been above what I expected with such simple code, so I hope you enjoy it as much as I have.
 
+## Installation
+
+I recommend using processing to open the sketch and running it that way, as you will get console feedback when you change the parameters.
+
+If this is not possible, there is an executable in the releases tab.
+
+
 ## Usage
 
 **[ / ]** - Increase/Decrease the primary hue of the galaxies/nebulae
