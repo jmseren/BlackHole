@@ -2,6 +2,8 @@ import java.util.*;
 
 Random rand = new Random();
 
+boolean blackHole = true;
+
 int starSize = 1;
 int starSizeSpread = 2;
 int starCount = 10000;
@@ -60,9 +62,13 @@ void draw(){
   // Create the accretion disk for the black hole
   //stroke(red(accretionDiskColor) / 10);
   //circle(width/2, height/2, blackHoleDiameter * 1.1);
+  
   noStroke();
-  fill(accretionDiskColor);
-  circle(width/2, height/2, blackHoleDiameter);
+  
+  if(blackHole){
+    fill(accretionDiskColor);
+    circle(width/2, height/2, blackHoleDiameter);
+  }
   
   //Not happy with how this looks
   //ellipse(width/2, height/2, blackHoleDiameter * 1.2, blackHoleDiameter * .8);
@@ -84,7 +90,7 @@ void draw(){
        float hue = noise(xoff, yoff, (xoff+yoff)/2);
        
        float brightnessMod = 1.0;
-       if(dist(x,y,width/2,height/2) < blackHoleDiameter * 1.2){
+       if(dist(x,y,width/2,height/2) < blackHoleDiameter * 1.2 && blackHole){
            float maxDist = (blackHoleDiameter * 1.2);
            brightnessMod = map(dist(width/2,height/2,x,y), 0, maxDist, -1, 1);
        }
@@ -117,10 +123,13 @@ void draw(){
   fill(0);
   
   // Finally, create the black hole
-  circle(width/2, height/2, blackHoleDiameter * 0.95);
+  if(blackHole){
+    circle(width/2, height/2, blackHoleDiameter * 0.95);
+  }
 }
 
 void mousePressed(){
+  print("Regenerating the universe...\n");
   redraw(); 
 }
 
@@ -173,6 +182,17 @@ void keyPressed(){
     case 'x':
       starSizeSpread++;
       print("Star size spread: " + starSizeSpread + "\n");
+      break;
+    case ' ':
+      blackHole = !blackHole;
+      print("Black hole toggled " + (blackHole ? "on" : "off") + "\n");
+      break;
+    case 'c':
+      print("Creating chaos...\n");
+      galaxyPrimary = rand.nextInt(360);
+      galaxySecondary = rand.nextInt(360);
+      blackHole = boolean(rand.nextInt(2));
+      redraw();
       break;
     default:
       
