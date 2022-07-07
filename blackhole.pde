@@ -4,6 +4,9 @@ Random rand = new Random();
 
 boolean blackHole = true;
 
+ArrayList<PShader> shaders = new ArrayList();
+int currShader = 0;
+
 int starSize = 1;
 int starSizeSpread = 2;
 int starCount = 10000;
@@ -21,13 +24,20 @@ int raySize = 20;
 float raySpanMultiplier = 1.0;
 int rayBrightness = 100;
 
-color galaxyPrimary = 220;
-color galaxySecondary = 282;
+float galaxyPrimary = 220;
+float galaxySecondary = 282;
+float hue1Delta = 0.0;
+float hue2Delta = 0.0;
 float galaxySizeModifier = 0.006;
 
+int sessID = 0000;
+
 void setup(){
+  sessID = 1000 + rand.nextInt(9000);
   noLoop();
   size(1800, 1000);
+  
+  
 }
 
 
@@ -81,9 +91,13 @@ void draw(){
   noiseDetail(5, .4);
   float xoff = 0.0;
   colorMode(HSB);
+  float tempHue1 = galaxyPrimary;
+  float tempHue2 = galaxySecondary;
   for(int x = 0; x < width; x++){
     xoff += galaxySizeModifier;  
-    float yoff = 0.0;   
+    float yoff = 0.0;
+    galaxyPrimary += hue1Delta;
+    galaxySecondary += hue2Delta;
     for(int y = 0; y < height; y++){
        yoff += galaxySizeModifier;
        float brightness = noise(xoff, yoff);
@@ -104,6 +118,9 @@ void draw(){
     }
   }
   
+  galaxyPrimary = tempHue1;
+  galaxySecondary = tempHue2;
+
   colorMode(RGB);
   
   noStroke();
@@ -126,6 +143,8 @@ void draw(){
   if(blackHole){
     circle(width/2, height/2, blackHoleDiameter * 0.95);
   }
+
+
 }
 
 void mousePressed(){
@@ -133,6 +152,7 @@ void mousePressed(){
   redraw(); 
 }
 
+// Controls
 void keyPressed(){
   switch(key){
     case '[':
@@ -192,10 +212,36 @@ void keyPressed(){
       galaxyPrimary = rand.nextInt(360);
       galaxySecondary = rand.nextInt(360);
       blackHole = boolean(rand.nextInt(2));
+      hue1Delta = (rand.nextFloat() - 0.5) / 10;
+      hue2Delta = (rand.nextFloat() - 0.5) / 10;
       redraw();
       break;
-    default:
-      
-    
+    case 'r':
+      print("Reset the hue deltas.\n");
+      hue1Delta = 0;
+      hue2Delta = 0;
+      break;
+    case 'i':
+      hue1Delta -= 0.02;
+      print("Primary hue delta: " + hue1Delta +"\n");
+      break;
+    case 'o':
+      hue1Delta += 0.02;
+      print("Primary hue delta: " + hue1Delta +"\n");
+      break;
+    case 'j':
+      hue2Delta -= 0.02;
+      print("Secondary hue delta: " + hue2Delta +"\n");
+      break;
+    case 'k':
+      hue2Delta += 0.02;
+      print("Secondary hue delta: " + hue2Delta +"\n");
+      break;
+    case '\n':
+      print("Saving image...\n");
+      saveFrame("universe-" + sessID + "-####.png");
+      break;
+    default:  
   }
+
 }

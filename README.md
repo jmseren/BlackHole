@@ -12,16 +12,25 @@ This project is a quick experiment I've been working on using Processing and Jav
 **; / '**- Increase/Decrease the secondary hue of the galaxies/nebulae
 
 
-**. / /**- Increase/Decrease the size multiplier of the ray
+**. / /** - Increase/Decrease the size multiplier of the ray
 
 
-**q / w**- Increase/Decrease the star count (by 250)
+**q / w** - Increase/Decrease the star count (by 250)
 
 
-**a / s**- Increase/Decrease average star size
+**a / s** - Increase/Decrease average star size
 
 
-**z / x**- Increase/Decrease the spread of star size
+**z / x** - Increase/Decrease the spread of star size
+
+
+**i / o** - Increase/Decrease the hue delta of the primary color
+
+
+**j / k** - Increase/Decrease the hue delta of the secondary color
+
+
+**r** - reset hue deltas to 0
 
 
 **SPACE** - Enable/Disable the black hole
@@ -30,3 +39,4 @@ This project is a quick experiment I've been working on using Processing and Jav
 **c** - Generate a chaotic universe (WIP) 
 
 
+**ENTER** - Save the current universe to a PNG file
