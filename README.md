@@ -40,3 +40,17 @@ This project is a quick experiment I've been working on using Processing and Jav
 
 
 **ENTER** - Save the current universe to a PNG file
+
+## Screenshots
+
+![Black Hole Screenshot with Gradient](https://i.postimg.cc/PqB4wTzT/universe-5106-0007.png)
+
+
+![Black Hole Screenshot](https://i.postimg.cc/pT4grwyF/blue1.png)
+
+
+![Black Hole Screenshot](https://i.postimg.cc/zvh4gxRP/green2.png)
+
+
+![Black Hole Screenshot](https://i.postimg.cc/sfGkqg09/space2.png)
+
