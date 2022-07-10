@@ -210,7 +210,11 @@ void draw(){
       shadow.beginDraw();
       shadow.fill(0);
       shadow.circle(shadow.width/2, shadow.height/2, p.d*1.05);
+      try{
       shadow.filter(BLUR, 5);
+      }catch(Exception e){
+        print("Error. Try generating again.\n");
+      }
       shadow.endDraw();
       image(shadow, p.x - shadow.width/2, p.y - shadow.height/2 );
     }
