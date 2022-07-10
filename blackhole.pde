@@ -2,10 +2,10 @@ import java.util.*;
 
 Random rand = new Random();
 
-boolean blackHole = true;
+boolean blackHole = false;
 
 ArrayList<Planet> planets;
-int numPlanets = 0;
+int numPlanets = 4;
 float planetSizeMod = 1.0;
 boolean planetShadows = true;
 
@@ -185,23 +185,22 @@ void draw(){
     fill(b);
     circle(x,y, r);
   }
-  
+
   //Create shadows for the planets
   if(planetShadows){
     for(Planet p : planets){
-      int fillLevel = 200;
-      float diameter = 1.0;
-      while(fillLevel > 0){
-        fill(4,4,4,fillLevel);
-        circle(p.x * 1.0017, p.y, p.d * diameter);
-        diameter += .01;
-        fillLevel -= 15;
-      }
-      
+      PGraphics shadow;
+      shadow = createGraphics(int(p.d * 1.4), int(p.d * 1.4));
+      shadow.beginDraw();
+      shadow.fill(0);
+      shadow.circle(shadow.width/2, shadow.height/2, p.d*1.05);
+      shadow.filter(BLUR, 5);
+      shadow.endDraw();
+      image(shadow, p.x - shadow.width/2, p.y - shadow.height/2 );
     }
   } 
+  
 
-  // Create the planets
   colorMode(HSB);
   strokeCap(PROJECT);
   xoff = 0.0;
@@ -216,7 +215,8 @@ void draw(){
           float noiseValue = noise(xoff, yoff);
           float xdist = dist(x, 0, p.x + p.d/1.25, 0);
           float ydist = dist(y, 0, p.y + p.d/1.25, 0);
-          color c = color(p.hue, p.sat, ((noiseValue * 180) * map(xdist, 0, p.d, 1.0, p.shadow / 5)));
+          float opacity = dist(x, y, p.x, p.y) >= (p.d/2) * .95 ? map(dist(x, y, p.x, p.y), 0, p.d, 0, 360) : 255; // not that happy with this
+          color c = color(p.hue, p.sat, ((noiseValue * 180) * map(xdist, 0, p.d, 1.0, p.shadow / 5)), opacity);
           
           stroke(c);
           strokeWeight(1);
@@ -226,6 +226,23 @@ void draw(){
       }
     }
   }
+
+  // Create rings for planets (they look okayish i guess)
+  for(Planet p : planets){
+    if(!p.rings) continue;
+    PGraphics ring = createGraphics(int(p.d), int(p.d));
+    ring.beginDraw();
+    ring.colorMode(HSB);
+    ring.noFill();
+    ring.stroke(p.hue, 70, 100);
+    ring.strokeWeight(map(p.d, 50, 600, 3, 12) + rand.nextInt(int(map(p.d, 0, 600, 1, 8))));
+    ring.ellipse(ring.width/2, 0, p.d*1.5, p.d);
+    ring.filter(BLUR, 5);
+    ring.endDraw();
+    image(ring, p.x - ring.width / 2, p.y - p.d/3);
+  }
+
+  
   strokeCap(ROUND);
   // Finally, create the black hole
   colorMode(RGB);
@@ -399,6 +416,7 @@ class Planet {
   int hue;
   int sat;
   float shadow;
+  boolean rings;
   public Planet(int x, int y, float d, int hue, int sat, float shadow){
     this.x = x;
     this.y = y;
@@ -406,5 +424,6 @@ class Planet {
     this.hue = hue;
     this.sat = sat;
     this.shadow = shadow;
+    rings = rand.nextInt(4) == 0;
   }
 }
