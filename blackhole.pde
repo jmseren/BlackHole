@@ -2,10 +2,10 @@ import java.util.*;
 
 Random rand = new Random();
 
-boolean blackHole = false;
+boolean blackHole = true;
 
 ArrayList<Planet> planets;
-int numPlanets = 4;
+int numPlanets = 0;
 float planetSizeMod = 1.0;
 boolean planetShadows = true;
 
@@ -242,7 +242,7 @@ void draw(){
     image(ring, p.x - ring.width / 2, p.y - p.d/3);
   }
 
-  
+
   strokeCap(ROUND);
   // Finally, create the black hole
   colorMode(RGB);
@@ -344,7 +344,7 @@ void keyPressed(){
         banding = !banding; 
         bandingAmt = 10 + rand.nextInt(45);
       }
-      if(rand.nextInt(2) == 0 && !blackHole){
+      if((rand.nextInt(2) == 0 && !blackHole) || rand.nextInt(10) == 0){
         numPlanets = rand.nextInt(6) + 1;
         planetSizeMod = rand.nextInt(2) + rand.nextFloat();
       }else{
@@ -355,6 +355,7 @@ void keyPressed(){
       }else{
         rayCount = 1;
       }
+      
       redraw();
       break;
     case 'r':
