@@ -3,6 +3,8 @@ import java.util.*;
 Random rand = new Random();
 
 boolean blackHole = true;
+boolean isStar = false;
+
 
 ArrayList<Planet> planets;
 int numPlanets = 0;
@@ -11,6 +13,7 @@ boolean planetShadows = true;
 
 int currShader = 0;
 
+float lens = 0.75;
 int starSize = 1;
 int starSizeSpread = 2;
 int starCount = 10000;
@@ -133,31 +136,38 @@ void draw(){
     galaxyPrimary += hue1Delta;
     galaxySecondary += hue2Delta;
     for(int y = 0; y < height; y++){
-       yoff += galaxySizeModifier;
-       float brightness = noise(xoff, yoff);
-       float hue = noise(xoff, yoff, (xoff+yoff)/2);
-       
-       float brightnessMod = 1.0;
-       
-       if(dist(x,y,width/2,height/2) < blackHoleDiameter * 1.2 && blackHole){
-           float maxDist = (blackHoleDiameter * 1.2);
-           brightnessMod = map(dist(width/2,height/2,x,y), 0, maxDist, -1, 1);
-       }else if(banding && !blackHole){
-          brightnessMod = .25 + (noise(xoff, yoff));
-          
-       }
+      yoff += galaxySizeModifier;
+      float brightness = noise(xoff, yoff);
+      float hue = noise(xoff, yoff, (xoff+yoff)/2);
+      
+      float brightnessMod = 1.0;
+      float edgeDistance = min(y, height - y);
+      float maxEdgeDistance = (1.0 - lens) * height;
 
-       
+      if(dist(x,y,width/2,height/2) < blackHoleDiameter * 1.2 && blackHole){
+          float maxDist = (blackHoleDiameter * 1.2);
+          brightnessMod = map(dist(width/2,height/2,x,y), 0, maxDist, -1, 1);
+      }else if(banding && !blackHole){
+        brightnessMod = .25 + (noise(xoff, yoff));
+        
+      }
+      
+
+      
       if(currBand || brightnessMod > 1.0){
         brightnessMod = 1.0;
       }
-       
-       
-       color c = color(lerp(galaxyPrimary, galaxySecondary, hue),230, (180 * brightness) * brightnessMod);
-       
-       stroke(c);
-       strokeWeight(1);
-       point(x, y);
+      float finalBrightness = (180 * brightness) * brightnessMod;
+      if(edgeDistance <= maxEdgeDistance){
+        finalBrightness = lerp(finalBrightness, -75, 1.0 - (edgeDistance / maxEdgeDistance));
+      }
+      
+      
+      color c = color(lerp(galaxyPrimary, galaxySecondary, hue) ,230, finalBrightness);
+      
+      stroke(c);
+      strokeWeight(1);
+      point(x, y);
     }
     if(banding){
         if(bandingTimeout > 0){
@@ -182,7 +192,13 @@ void draw(){
     int y = rand.nextInt(windowH);
     int r = !(starSize == 0) ? ((rand.nextInt(11) % 2) == 0 ? starSize - rand.nextInt(starSizeSpread+1) : starSize + rand.nextInt(starSizeSpread+1)) : 1;
     int b = (rand.nextInt(11) % 2) == 0 ? starBrightness - rand.nextInt(starBrightnessSpread+1) : starBrightness + rand.nextInt(starBrightnessSpread+1);
-    fill(b);
+    float edgeDistance = min(y, height - y);
+    float maxEdgeDistance = (1.0 - lens) * height;
+    if(edgeDistance <= maxEdgeDistance){
+      b = int(lerp(b, -50, 1.0 - (edgeDistance / maxEdgeDistance)));
+    }
+
+    fill(255, 255, 255, b);
     circle(x,y, r);
   }
 
@@ -245,9 +261,37 @@ void draw(){
 
   strokeCap(ROUND);
   // Finally, create the black hole
+  
   colorMode(RGB);
-  fill(0);
-  if(blackHole){
+  if(isStar){
+      PGraphics star = createGraphics(blackHoleDiameter, blackHoleDiameter);
+      xoff = 0.0;
+      int starHue = 25;
+      float offset = 0.025;
+      star.beginDraw();
+      star.colorMode(HSB);
+      for(int x = 0; x < star.width; x++){
+        float yoff = 0.0;
+        for(int y = 0; y < star.height; y++){
+          if(dist(x, y, star.width/2, star.height/2) <= star.width/2){
+            star.strokeWeight(1.5);
+            star.stroke(starHue, 255, 255 * noise(xoff,yoff));
+            star.point(x, y);
+          }
+          yoff += offset;
+        }
+        xoff += offset;
+      }
+      star.filter(BLUR, 1);
+      star.endDraw();
+      image(star, width/2 - star.width/2, height/2 - star.height/2);
+      
+  }else if(rand.nextInt(10) == 0){ //10% chance for a white hole/star
+      fill(253, 244, 220);
+  }else{
+    fill(0);
+  }
+  if(blackHole && !isStar){
     circle(width/2, height/2, blackHoleDiameter * 0.95);
   }
 
@@ -318,8 +362,17 @@ void keyPressed(){
       print("Star size spread: " + starSizeSpread + "\n");
       break;
     case ' ':
-      blackHole = !blackHole;
-      print("Black hole toggled " + (blackHole ? "on" : "off") + "\n");
+      if(blackHole && !isStar){
+        isStar = true;
+        print("Star enabled\n");
+      }else if(blackHole && isStar){
+        blackHole = false;
+        isStar = false;
+        print("Star/black hole disabled \n");
+      }else if(!blackHole && !isStar){
+        blackHole = true;
+        print("Black hole enabled\n");
+      }
       break;
     case 'b':
       banding = !banding;
@@ -355,13 +408,21 @@ void keyPressed(){
       }else{
         rayCount = 1;
       }
+      if(blackHole && rand.nextInt(10) == 0){
+        isStar = true;
+      }else{
+        isStar = false;
+      }
       
       redraw();
       break;
+    case 'e':
+      lens -= 0.05;
+      print("Lens: " + lens);
+      break;
     case 'r':
-      print("Reset the hue deltas.\n");
-      hue1Delta = 0;
-      hue2Delta = 0;
+      lens += 0.05;
+      print("Lens: " + lens);
       break;
     case 'i':
       hue1Delta -= 0.02;

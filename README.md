@@ -49,16 +49,19 @@ If this is not possible, there is an executable in the releases tab.
 **t / y** - Increase/Decrease ray count
 
 
+**e / r** - Increase/Decrease lens size
+
+
 **b** - Enable banding
 
 
 **r** - reset hue deltas to 0
 
 
-**SPACE** - Enable/Disable the black hole
+**SPACE** - Cycle black hole and star
 
 
-**c** - Generate a chaotic universe (WIP) 
+**c** - Generate a universe with random settings
 
 
 **ENTER** - Save the current universe to a PNG file
